@@ -1,7 +1,7 @@
 {
   "keyfile": "g:trykeys.txt",
   "scopeip": "192.168.10.14",
-  "port": 23,
+  "port": "23",
   "username": "root",
   "password": "eevblog",
   "bandwidth": "true",
