@@ -169,16 +169,28 @@ namespace TryKeys
                 return;
             }
 
-            s_username = config["username"].Length > 0 ? config["username"] : "root";
-            s_password = config["password"].Length > 0 ? config["password"] : "eevblog";
+            s_username = config["username"];
+            s_password = config["password"];
+            if (s_username.Length == 0)
+                Console.WriteLine("WARNING: Trying to login with blank username! If this is not desired, please specify the username (using key \"username\") in TryKeys.json.");
+            if (s_password.Length == 0)
+                Console.WriteLine("WARNING: Trying to login with blank password! If this is not desired, please specify the password (using key \"password\") in TryKeys.json.");
 
             Console.WriteLine("Execution starts @ " + DateTime.Now.ToShortDateString() + " " + DateTime.Now.ToShortTimeString());
 
-            client = new TelnetClient(s_ip, 23);
+            client = new TelnetClient(s_ip, i_port);
             if (!client.Login(s_username, s_password))
             {
-                Console.WriteLine("ERROR: Unable to establish telnet connection on port 23 to scope.");
-                return;
+                Console.WriteLine("ERROR: Unable to login to the scope via telnet using port " + i_port + ".");
+                Console.WriteLine("Do you want to try to continue without authentication? [y/N]");
+                while (true) {
+                    var c = Console.ReadKey();
+                    Console.Write("\b \b");
+                    if (c.KeyChar == 'n' || c.KeyChar == 'N' || c.Key == ConsoleKey.Enter)
+                        return;
+                    else if (c.KeyChar == 'y' || c.KeyChar == 'Y')
+                        break;
+                }
             }
 
             foreach (String option in new String[] { "AWG", "MSO", "WIFI" })
